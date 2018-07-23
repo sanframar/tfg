@@ -18,14 +18,20 @@ def  index ( request ):
 
 def datos(request):
     obtenerDatosApi()
-    datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
+    try:
+        datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
     
-    fechaInicio = datos.head(1).reset_index()['Date'][0]
-    fechaFin = datos.tail(1).reset_index()['Date'][0]
+        fechaInicio = datos.head(1).reset_index()['Date'][0]
+        fechaFin = datos.tail(1).reset_index()['Date'][0]
+        tamDatos = datos.size
+    except:
+        fechaInicio = "Sin fecha inicio"
+        fechaFin = "Sin fecha fin"
+        tamDatos = 0
     
     template = loader.get_template('predicterapp/datos.html')
     context = {
-        'datosBBDD': datos.size,
+        'datosBBDD': tamDatos,
         'fechaInicio': fechaInicio,
         'fechaFin': fechaFin,
     }

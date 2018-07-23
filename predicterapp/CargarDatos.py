@@ -40,38 +40,61 @@ def datosActualizado():
             actualizado = False
     
     except:
+        actualizado = False
         print(actualizado)
     
     return actualizado
 
 def actualizarDatos():
-    current = datetime.datetime.now()
     dfCierre = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
     ultimaFechaCierre = dfCierre.tail(1).reset_index()['Date'][0]
     
-    f = web.DataReader("^IBEX", 'yahoo', ultimaFechaCierre, current)
-    
-    ibexCierre = f.drop(['Open', 'High', 'Low', 'Adj Close', 'Volume'], axis=1)
-    
-    dfCierre = dfCierre.append(ibexCierre)
-    
-    dfCierre = dfCierre.drop_duplicates()
-    
-    dfCierre.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
+    peticionApiActualizarDatos(ultimaFechaCierre)
+   
     
 def obtenicionDeDatos():
     '''Seleccionamos las fechas de las que queremos obtener los datos'''
     start = datetime.datetime(2000, 1, 1)
     end = datetime.datetime.now()
     
-    '''Construimos la peticion a la api de yahoo'''
-    f = web.DataReader("^IBEX", 'yahoo', start, end)
+    peticionApiObtencionDeDatos(start, end)
     
-    '''Obtenemos los datos y los almacenamos en un dataframe'''
-    ibexCierre = f.drop(['Open', 'High', 'Low', 'Adj Close', 'Volume'], axis=1)
+def peticionApiActualizarDatos(ultimaFecha):
+    current = datetime.datetime.now()
     
-    '''Guardamos los datos en un fichero .infer para su posterior procesamiento, pero
-    antes comprobamos que los ficheros no existen'''
+    for x in range(0, 3):
+        try:
+            dfCierre = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
+            
+            f = web.DataReader("^IBEX", 'yahoo', ultimaFecha, current)
+            
+            ibexCierre = f.drop(['Open', 'High', 'Low', 'Adj Close', 'Volume'], axis=1)
+            
+            dfCierre = dfCierre.append(ibexCierre)
+            
+            dfCierre = dfCierre.drop_duplicates()
+            
+            dfCierre.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
+        except:
+            print("Volviendo a intentar la peticion de actualizar datos")
+
+def peticionApiObtencionDeDatos(start, end):
+    '''Construimos la peticion a la api de yahoo, intentamos realizar la peticion 3 veces antes de desistir'''
+    for x in range(0, 3):
+        try:
+            f = web.DataReader("^IBEX", 'yahoo', start, end)
+            
+            '''Obtenemos los datos y los almacenamos en un dataframe'''
+            ibexCierre = f.drop(['Open', 'High', 'Low', 'Adj Close', 'Volume'], axis=1)
+    
+            '''Guardamos los datos en un fichero .infer para su posterior procesamiento, pero
+            antes comprobamos que los ficheros no existen'''
    
-    ibexCierre.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
+            ibexCierre.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
+            break
+        except:
+            print("Volviendo a intentar la peticion de obtencion de datos")
+
+
+    
     
