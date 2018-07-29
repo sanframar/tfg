@@ -5,16 +5,18 @@
 <link rel="stylesheet" href="{% static 'predicterapp/style.css' %}">
 
 <ul id="jMenu">
-  <li><a class="active" href="/predicterapp/">Home</a></li>
-  <li><a href="datos">Datos almacenados</a></li>
-  <li><a href="supervisado">Supervisado</a></li>
-  <li><a href="noSupervisado">No Supervisado</a></li>
+  <li id="jMenu"><a class="active" href="/predicterapp/">Home</a></li>
+  <li id="jMenu"><a href="datos">Datos almacenados</a></li>
+  <li id="jMenu"><a href="supervisado">Supervisado</a></li>
+  <li id="jMenu"><a href="noSupervisado">No Supervisado</a></li>
 </ul>
 
 <h1>DATOS EN LA BBDD</h1>
 
-{% if datosBBDD %}
-        <a>Hay {{ datosBBDD }} entradas en la Base de Datos entre las fechas {{fechaInicio}} y {{fechaFin}}</a>
+{% if BBDD %}
+	{% for nombre, fechaInicio, fechaFin, tam in BBDD %}
+        <a id="miDato">- Datos de {{nombre}} con {{tam}} entradas en la Base de Datos entre las fechas {{fechaInicio}} y {{fechaFin}}</a><br/>
+    {% endfor %}
 {% else %}
     <p>No hay datos.</p>
 {% endif %}

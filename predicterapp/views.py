@@ -7,7 +7,7 @@ import pandas_datareader.data as web
 import datetime
 import pandas as pd
 import os
-from predicterapp.CargarDatos import obtenerDatosApi
+from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
 
 # -*- coding: utf-8 -*-
 # Create your views here.
@@ -18,12 +18,17 @@ def  index ( request ):
 
 def datos(request):
     obtenerDatosApi()
+    BBDD = []
     try:
-        datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\ibexCierre.infer')
-    
-        fechaInicio = datos.head(1).reset_index()['Date'][0]
-        fechaFin = datos.tail(1).reset_index()['Date'][0]
-        tamDatos = datos.size
+        for x in datosYahoo:
+            datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + x + '.infer')
+        
+            fechaInicio = datos.head(1).reset_index()['Date'][0]
+            fechaFin = datos.tail(1).reset_index()['Date'][0]
+            tamDatos = datos.size
+            tupla = [x, fechaInicio, fechaFin, tamDatos]
+            BBDD.append(tupla)
+            print(BBDD)
     except:
         fechaInicio = "Sin fecha inicio"
         fechaFin = "Sin fecha fin"
@@ -31,9 +36,7 @@ def datos(request):
     
     template = loader.get_template('predicterapp/datos.html')
     context = {
-        'datosBBDD': tamDatos,
-        'fechaInicio': fechaInicio,
-        'fechaFin': fechaFin,
+        'BBDD': BBDD,
     }
     return HttpResponse(template.render(context, request))
 
