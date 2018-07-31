@@ -80,7 +80,7 @@ def peticionApiActualizarDatos(ultimaFecha, dato):
             
             dataframe = dataframe.append(dataframeActualizado)
             
-            #dataframe = dataframe.drop_duplicates()
+            dataframe = dataframe[~dataframe.index.duplicated()]
             
             dataframe.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + dato + '.infer')
             
