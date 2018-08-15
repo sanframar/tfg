@@ -8,6 +8,7 @@ import datetime
 import pandas as pd
 import os
 from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
+from predicterapp.PreProcesamiento import preProcesamientoDatos
 
 # -*- coding: utf-8 -*-
 # Create your views here.
@@ -41,6 +42,7 @@ def datos(request):
     return HttpResponse(template.render(context, request))
 
 def preProcesamiento(request):
+    preProcesamientoDatos()
     return render_to_response('predicterapp/preProcesamiento.html')
 
 def supervisado(request):

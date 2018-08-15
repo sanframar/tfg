@@ -1,11 +1,24 @@
 import pandas_datareader.data as web
-from sklearn.preprocessing import StandardScaler
+from sklearn import preprocessing
 import datetime
 import pandas as pd
 import numpy as np
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
+
+def preProcesamientoDatos():
+    try:
+        for x in datosYahoo:
+            dataframe = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
+            arrayNulos = indicesNulos(dataframe)
+            arraySinNulos = calcularValoresNaN(dataframe.values, arrayNulos, x)
+            normalizacionDataframe(arraySinNulos, x)
+    except:
+        print('Error al realizar el pre procesamiento')
+    
 
 #Metodo que devuelve un array con los indices de los valores nulos del dataframe (NaN)
 def indicesNulos(dataframe):
@@ -18,12 +31,15 @@ def indicesNulos(dataframe):
     return indicesNaN
     
 #Metodo que devuelve un array con los elementos normalizados entre los valores 0 y 1
-def normalizacionDataframe(dataframe):
-    stdsclr = StandardScaler()
-    return stdsclr.fit_transform(dataframe)
+def normalizacionDataframe(array, dataframeName):
+    newArray = preprocessing.normalize(array, axis=0, norm='max')
+    guardarArray(newArray, dataframeName)
+
+def guardarArray(array, dataframeName):
+    np.save(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + dataframeName, array)
 
 #Metodo que calcula los nuevos valores para eliminar los NaN de nuestro conjunto de datos
-def calcularValoresNaN(array, indicesNaN):
+def calcularValoresNaN(array, indicesNaN, dataframeName):
     for aux in indicesNaN:
         if(aux==0):
             nanEnInicio(array, indicesNaN, aux)
