@@ -21,7 +21,7 @@ def datos(request):
     BBDD = []
     try:
         for x in datosYahoo:
-            datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + x + '.infer')
+            datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
         
             fechaInicio = datos.head(1).reset_index()['Date'][0]
             fechaFin = datos.tail(1).reset_index()['Date'][0]

@@ -15,7 +15,7 @@ datosYahoo = {"BBVA" : "BBVA.MC", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC"}
 def obtenerDatosApi():
     try:
         for x in datosYahoo:
-            ruta = '\predicterapp\static\predicterapp\myDates\\' + x + '.infer';
+            ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer';
             pd.read_pickle(BASE_DIR + ruta)
             hayDatos = True
     except FileNotFoundError:
@@ -40,7 +40,7 @@ def datosActualizado():
     current = datetime.datetime.now()
     try:
         for x in datosYahoo:
-            ruta = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + x + '.infer')
+            ruta = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
             ultimaFechaCierre = ruta.tail(1).reset_index()['Date'][0]
             if ultimaFechaCierre.date() < current.date():
                 actualizado = False
@@ -53,7 +53,7 @@ def datosActualizado():
 
 def actualizarDatos():
     for x in datosYahoo:
-        ruta = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + x + '.infer')
+        ruta = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
         ultimaFechaCierre = ruta.tail(1).reset_index()['Date'][0] + pd.Timedelta(days=1)
         
         peticionApiActualizarDatos(ultimaFechaCierre, x)
@@ -72,7 +72,7 @@ def peticionApiActualizarDatos(ultimaFecha, dato):
     
     for x in range(0, 3):
         try:
-            dataframe = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + dato + '.infer')
+            dataframe = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + dato + '.infer')
             
             f = web.DataReader(datosYahoo[dato], 'yahoo', ultimaFecha, current)
             
@@ -82,7 +82,7 @@ def peticionApiActualizarDatos(ultimaFecha, dato):
             
             dataframe = dataframe[~dataframe.index.duplicated()]
             
-            dataframe.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + dato + '.infer')
+            dataframe.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + dato + '.infer')
             
             break
         except:
@@ -100,7 +100,7 @@ def peticionApiObtencionDeDatos(start, end, dato):
             '''Guardamos los datos en un fichero .infer para su posterior procesamiento, pero
             antes comprobamos que los ficheros no existen'''
    
-            dataframe.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\\' + dato + '.infer')
+            dataframe.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + dato + '.infer')
             break
         except:
             print("Volviendo a intentar la peticion de obtencion de datos")
