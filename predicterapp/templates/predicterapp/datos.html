@@ -4,12 +4,9 @@
 <html lang ="es">
 <link rel="stylesheet" href="{% static 'predicterapp/style.css' %}">
 
-<ul id="jMenu">
-  <li id="jMenu"><a class="active" href="/predicterapp/">Home</a></li>
-  <li id="jMenu"><a href="datos">Datos almacenados</a></li>
-  <li id="jMenu"><a href="supervisado">Supervisado</a></li>
-  <li id="jMenu"><a href="noSupervisado">No Supervisado</a></li>
-</ul>
+<div class="basic">
+{% include "predicterapp/header.html" %}    
+</div>
 
 <h1>DATOS EN LA BBDD</h1>
 

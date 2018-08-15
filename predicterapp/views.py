@@ -40,6 +40,9 @@ def datos(request):
     }
     return HttpResponse(template.render(context, request))
 
+def preProcesamiento(request):
+    return render_to_response('predicterapp/preProcesamiento.html')
+
 def supervisado(request):
     return render_to_response('predicterapp/supervisado.html')
 

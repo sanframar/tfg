@@ -8,10 +8,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # URL: Pagina principal
     path('', views.index, name='index'),
+    # URL: Datos almacenados
     path('datos', views.datos, name='datos'),
-    # ex: /polls/5/results/
+    # URL: Aprendizaje Supervisado
+    path('preProcesamiento', views.preProcesamiento, name='preProcesamiento'),
+    # URL: Aprendizaje Supervisado
     path('supervisado', views.supervisado, name='supervisado'),
-    # ex: /polls/5/vote/
+    # URL: Aprendizaje No Supervisado
     path('noSupervisado', views.noSupervisado, name='noSupervisado'),
 ]
