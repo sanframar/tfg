@@ -44,22 +44,32 @@ def datos(request):
 
 def preProcesamiento(request):
     preProcesamientoDatos()
-    ARRAY = []
+    BBDD = []
     try:
         for x in datosYahoo:
-            datos = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
+            datosArray = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
+            datosDataframe = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
         
-            valorMinimo = datos.min()
-            valorMaximo = datos.max()
-            valorMedio = np.mean(datos)
-            tupla = [x, valorMinimo, valorMaximo, valorMedio]
-            ARRAY.append(tupla)
+            #Estadisticas del conjunto de datos pre procesados
+            valorMinimoArray = datosArray.min()
+            valorMaximoArray = datosArray.max()
+            valorMedioArray = np.mean(datosArray)
+            valoresNaNArray = np.isnan(datosArray).sum()
+            
+            #Estadisticas del conjunto de datos sin el pre procesado
+            valorMinimoDataframe = datosDataframe.loc[datosDataframe['Close'].idxmin()][0]
+            valorMaximoDataframe = datosDataframe.loc[datosDataframe['Close'].idxmax()][0]
+            valorMedioDataframe = datosDataframe['Close'].median()
+            valoresNaNDataframe = datosDataframe['Close'].isnull().sum()
+            
+            tupla = [x, valoresNaNArray, valorMinimoArray, valorMaximoArray, valorMedioArray, valorMinimoDataframe, valorMaximoDataframe, valorMedioDataframe, valoresNaNDataframe]
+            BBDD.append(tupla)
     except:
         print("Error al mostrar los datos del pre-procesamiento")
     
     template = loader.get_template('predicterapp/preProcesamiento.html')
     context = {
-        'ARRAY': ARRAY,
+        'BBDD': BBDD,
     }
     return HttpResponse(template.render(context, request))
 
