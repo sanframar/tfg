@@ -2,12 +2,41 @@
 
 <!DOCTYPE html>
 <html lang ="es">
-<link rel="stylesheet" href="{% static 'predicterapp/style.css' %}">
+<link rel="stylesheet" href="{% static 'predicterapp/body.css' %}">
 
 <div class="basic">
 {% include "predicterapp/header.html" %}    
 </div>
 
-<h1>PRE PROCESAMIENTO</h1>
+{% if ARRAY %}
+	{% for nombre, valorMinimo, valorMaximo, valorMedio in ARRAY %}
+	
+        <div>
+		<fieldset class="contenedorArray">
+			<legend>{{nombre}}:</legend>
+
+			<fieldset class="contenido">
+			<legend>Sin preprocesamiento:</legend>
+				<p><a>Valores NaN: Empty</a><p/>
+				<p><a>Valor maximo: 20</a><p/>
+				<p><a>Valor minimo: 20</a><p/>
+				<p><a>Valor medio: 20</a><p/>
+			</fieldset>
+
+			<fieldset class="contenido">
+			<legend>Con preprocesamiento:</legend>
+				<p><a>Valores NaN: 0</a><p/>
+				<p><a>Valor maximo: {{valorMaximo|floatformat:"3"}}</a><p/>
+				<p><a>Valor minimo: {{valorMinimo|floatformat:"3"}}</a><p/>
+				<p><a>Valor medio: {{valorMedio|floatformat:"3" }}</a><p/>
+			</fieldset>
+		</fieldset>
+		</div>
+        
+    {% endfor %}
+{% else %}
+    <p>No hay datos.</p>
+{% endif %}
 
 </html>
+

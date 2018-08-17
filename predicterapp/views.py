@@ -6,6 +6,7 @@ from django.shortcuts import render_to_response
 import pandas_datareader.data as web
 import datetime
 import pandas as pd
+import numpy as np
 import os
 from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
 from predicterapp.PreProcesamiento import preProcesamientoDatos
@@ -43,7 +44,24 @@ def datos(request):
 
 def preProcesamiento(request):
     preProcesamientoDatos()
-    return render_to_response('predicterapp/preProcesamiento.html')
+    ARRAY = []
+    try:
+        for x in datosYahoo:
+            datos = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
+        
+            valorMinimo = datos.min()
+            valorMaximo = datos.max()
+            valorMedio = np.mean(datos)
+            tupla = [x, valorMinimo, valorMaximo, valorMedio]
+            ARRAY.append(tupla)
+    except:
+        print("Error al mostrar los datos del pre-procesamiento")
+    
+    template = loader.get_template('predicterapp/preProcesamiento.html')
+    context = {
+        'ARRAY': ARRAY,
+    }
+    return HttpResponse(template.render(context, request))
 
 def supervisado(request):
     return render_to_response('predicterapp/supervisado.html')
