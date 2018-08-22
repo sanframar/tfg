@@ -73,6 +73,17 @@ def preProcesamiento(request):
     }
     return HttpResponse(template.render(context, request))
 
+def regresion ( request ): 
+    datosArray = []
+    for aux in datosYahoo:
+        datosArray.append(aux)
+    template = loader.get_template('predicterapp/regresion.html')
+    context = {
+        'datosArray': datosArray,
+    }
+    return HttpResponse(template.render(context, request))
+
+
 def supervisado(request):
     return render_to_response('predicterapp/supervisado.html')
 

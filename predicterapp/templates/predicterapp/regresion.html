@@ -1,0 +1,29 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang ="es">
+
+<div class="basic">
+{% include "predicterapp/header.html" %}    
+</div>
+
+<div>
+<select id="datos" onchange="myFunction()">
+  <option  value="" selected="selected">---SELECCIONAR---</option>
+  {% for dato in datosArray %}
+   <option value="{{dato}}">{{dato}}</option>
+  {% endfor %}
+</select>
+<a>{{datos.selected}}</a>
+</div>
+<p id="datoSeleccionado"></p>
+
+</html>
+
+
+<script> 
+function myFunction() {
+    var x = document.getElementById("datos").value;
+    document.getElementById("datoSeleccionado").innerHTML = "Has seleccionado: " + x;
+}
+</script>

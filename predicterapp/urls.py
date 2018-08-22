@@ -12,8 +12,10 @@ urlpatterns = [
     path('', views.index, name='index'),
     # URL: Datos almacenados
     path('datos', views.datos, name='datos'),
-    # URL: Aprendizaje Supervisado
+    # URL: Pre procesamiento
     path('preProcesamiento', views.preProcesamiento, name='preProcesamiento'),
+    # URL: Regresion
+    path('regresion', views.regresion, name='regresion'),
     # URL: Aprendizaje Supervisado
     path('supervisado', views.supervisado, name='supervisado'),
     # URL: Aprendizaje No Supervisado
