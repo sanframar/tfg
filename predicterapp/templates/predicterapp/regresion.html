@@ -18,6 +18,8 @@
 </div>
 <p id="datoSeleccionado"></p>
 
+<button type="button" onclick="enviar()">Procesar</button>
+
 </html>
 
 
@@ -26,4 +28,17 @@ function myFunction() {
     var x = document.getElementById("datos").value;
     document.getElementById("datoSeleccionado").innerHTML = "Has seleccionado: " + x;
 }
+
+function enviar() {
+  var x = document.getElementById("datos").value;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "regresion?datoSeleccionado="+x, true);
+  xhttp.send();
+}
+
 </script>
