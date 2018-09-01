@@ -11,6 +11,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 datosYahoo = {"BBVA" : "BBVA.MC", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC"}
+datosYahooTupla = (('BBVA', 'BBVA'), ('Santander', 'Santander'), ('Sabadell', 'Sabadell'))
 
 def obtenerDatosApi():
     try:

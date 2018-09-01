@@ -107,11 +107,12 @@ def formularioParaRegresion(request):
 
 def resultadoRegresion(form):
     numeroDias = form.data['diasAPredecir']
-    print(type(numeroDias))
+    select = form.data['select']
             
     template = loader.get_template('predicterapp/resultadoRegresion.html')
     context = {
         'numeroDias': numeroDias,
+        'select': select,
     }
     return HttpResponse(template.render(context))
 
