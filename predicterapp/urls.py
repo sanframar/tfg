@@ -16,6 +16,10 @@ urlpatterns = [
     path('preProcesamiento', views.preProcesamiento, name='preProcesamiento'),
     # URL: Regresion
     path('regresion', views.regresion, name='regresion'),
+    # URL: Formulario Regresion
+    path('regresion/formulario', views.formularioParaRegresion, name='formularioParaRegresion'),
+     # URL: Resultado Regresion
+    path('resultadoRegresion', views.resultadoRegresion, name='resultadoRegresion'),
     # URL: Aprendizaje Supervisado
     path('supervisado', views.supervisado, name='supervisado'),
     # URL: Aprendizaje No Supervisado

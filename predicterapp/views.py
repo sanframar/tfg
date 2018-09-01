@@ -2,6 +2,7 @@ from django.shortcuts import render
 from  django.http  import  HttpResponse
 from django.template import loader
 from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
 
 import pandas_datareader.data as web
 import datetime
@@ -10,6 +11,7 @@ import numpy as np
 import os
 from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
 from predicterapp.PreProcesamiento import preProcesamientoDatos
+from .forms import FormularioRegresion
 
 # -*- coding: utf-8 -*-
 # Create your views here.
@@ -75,14 +77,43 @@ def preProcesamiento(request):
 
 def regresion ( request ): 
     datosArray = []
+    form = FormularioRegresion()
     for aux in datosYahoo:
         datosArray.append(aux)
     template = loader.get_template('predicterapp/regresion.html')
     context = {
         'datosArray': datosArray,
+        'form': form,
     }
     return HttpResponse(template.render(context, request))
 
+def formularioParaRegresion(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'GET':
+        # create a form instance and populate it with data from the request:
+        form = FormularioRegresion(request.GET)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # redirect to a new URL:
+            #return HttpResponseRedirect(resultadoRegresion(form))
+            return resultadoRegresion(form)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = FormularioRegresion()
+        return render(request, 'predicterapp/regresion.html', {'form': form})
+    #return render(request, 'predicterapp/regresion.html', {'form': form})
+
+def resultadoRegresion(form):
+    numeroDias = form.data['diasAPredecir']
+    print(type(numeroDias))
+            
+    template = loader.get_template('predicterapp/resultadoRegresion.html')
+    context = {
+        'numeroDias': numeroDias,
+    }
+    return HttpResponse(template.render(context))
 
 def supervisado(request):
     return render_to_response('predicterapp/supervisado.html')

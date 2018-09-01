@@ -1,0 +1,16 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang ="es">
+<link rel="stylesheet" href="{% static 'predicterapp/style.css' %}">
+
+<div class="basic">
+{% include "predicterapp/header.html" %}    
+</div>
+
+<div>
+	<a>Numero de dias: {{numeroDias}}</a>
+</div>
+
+
+</html>

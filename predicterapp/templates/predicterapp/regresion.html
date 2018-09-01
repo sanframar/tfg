@@ -2,43 +2,17 @@
 
 <!DOCTYPE html>
 <html lang ="es">
-
+<link rel="stylesheet" href="{% static 'predicterapp/body.css' %}">
 <div class="basic">
 {% include "predicterapp/header.html" %}    
 </div>
 
-<div>
-<select id="datos" onchange="myFunction()">
-  <option  value="" selected="selected">---SELECCIONAR---</option>
-  {% for dato in datosArray %}
-   <option value="{{dato}}">{{dato}}</option>
-  {% endfor %}
-</select>
-<a>{{datos.selected}}</a>
-</div>
-<p id="datoSeleccionado"></p>
-
-<button type="button" onclick="enviar()">Procesar</button>
+<form action="/predicterapp/regresion/formulario" method="get">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
 
 </html>
 
 
-<script> 
-function myFunction() {
-    var x = document.getElementById("datos").value;
-    document.getElementById("datoSeleccionado").innerHTML = "Has seleccionado: " + x;
-}
-
-function enviar() {
-  var x = document.getElementById("datos").value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("demo").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "regresion?datoSeleccionado="+x, true);
-  xhttp.send();
-}
-
-</script>
