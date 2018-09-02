@@ -11,6 +11,7 @@ import numpy as np
 import os
 from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
 from predicterapp.PreProcesamiento import preProcesamientoDatos
+from predicterapp.Regresion import regresionPolinomial
 from .forms import FormularioRegresion
 
 # -*- coding: utf-8 -*-
@@ -109,10 +110,13 @@ def resultadoRegresion(form):
     numeroDias = form.data['diasAPredecir']
     select = form.data['select']
             
+    resultado = regresionPolinomial(select, numeroDias)
+    
     template = loader.get_template('predicterapp/resultadoRegresion.html')
     context = {
         'numeroDias': numeroDias,
         'select': select,
+        'resultado': resultado,
     }
     return HttpResponse(template.render(context))
 
