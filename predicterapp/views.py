@@ -104,7 +104,7 @@ def formularioParaRegresion(request):
     else:
         form = FormularioRegresion()
         return render(request, 'predicterapp/regresion.html', {'form': form})
-    #return render(request, 'predicterapp/regresion.html', {'form': form})
+    return render(request, 'predicterapp/regresion.html', {'form': form})
 
 def resultadoRegresion(form):
     numeroDias = form.data['diasAPredecir']
