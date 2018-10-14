@@ -5,20 +5,61 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def regresionPolinomial(nombreDatos, numerosDiasAPredecir):
-    '''Preparamos los datos para la creaciom del algoritmo de regresion'''
-    '''CUIDADO, COGEMOS SOLO 100 VALORES PARA PROBARLO. ESTO HAY QUE MODIFICARLO'''
-    Y = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + nombreDatos + '.npy').reshape(1, -1)[0][0:100]
-    X = np.arange(Y.size).reshape(-1, 1)
+def regresionPolinomial(nombreDatos, numerosDiasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
+    '''Leemeos los datos almacenados'''
+    ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + nombreDatos + '.infer';
+    datosInfer = pd.read_pickle(BASE_DIR + ruta)
     
-    '''Entrenamos el algoritmo con los datos proporcionados'''
+    datosArray = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + nombreDatos + '.npy')
+    
+    '''Creamos los vectores correspondientes al conjunto de entrenamiento y al de pruebas'''
+    vectorTrain = vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicioTrain, fechaFinTrain)
+    vectorTest = vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicioTest, fechaFinTest)
+    
+    '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
+    matrizTrain = crearMatriz(vectorTrain, numerosDiasAPredecir)
+    matrizTest = crearMatriz(vectorTest, numerosDiasAPredecir)
+    
+    '''Dividimos nuestras matrices de entrenamiento y pruebas para poder entrenar el algoritmo'''
+    y_train = matrizTrain[:,matrizTrain[0].size-1]
+    X_train = np.delete(matrizTrain, matrizTrain[0].size-1, 1)
+    y_test = matrizTest[:,matrizTest[0].size-1]
+    X_test = np.delete(matrizTest, matrizTest[0].size-1, 1)
+    
+    '''Declaramos nuestro algoritmo de regresion y lo entrenamos con el conjunto de entrenamiento'''
+    from sklearn.kernel_ridge import KernelRidge
     clf = KernelRidge(kernel="polynomial")
-    clf.fit(X, Y)
+    clf.fit(X_train, y_train)
     
-    '''Predecimos los valores. OJO, ESTE METODO NO FUINCIONA CORRECTAMENTE Y SE DEBERA DE MODIFICAR EN EL FUTURO POR OTRO
-    QUE FUNCIONE MEJOR'''
-    #dias = []
-    #for x in range(numerosDiasAPredecir):
-    #    dias.append(Y.size + x)
+    '''Comprobamos como es de bueno nuestro algoritmo'''
+    score = clf.score(X_test, y_test)
     
-    return  clf.predict(numerosDiasAPredecir)
+    return score
+    
+    #return  clf.predict(numerosDiasAPredecir)
+
+
+
+def crearMatriz(datos, ventana):
+    ventana = int(ventana)
+    matriz = np.zeros((datos.size, ventana+1))
+    for x in range(ventana+1):
+        vector = crearVector(datos, x)
+        matriz[:,ventana-x] = vector[:,0]
+    return matriz[ventana:vector.size :,]
+
+def crearVector(vector, desplazamiento):
+    result = vector[0:vector.size-1-desplazamiento+1]
+    for aux in range(desplazamiento):
+        result = np.insert(result, 0, 0)
+    return result.reshape(-1, 1)
+
+def buscarFecha(datosInfer, fecha):
+    dt = pd.to_datetime(fecha)
+    return datosInfer.index.get_loc(dt, method='nearest')
+
+def vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicio, fechaFin):
+    indiceFechaInicio = buscarFecha(datosInfer, fechaInicio)
+    indiceFechaFin = buscarFecha(datosInfer,fechaFin)
+    
+    return datosArray[indiceFechaInicio: indiceFechaFin]
