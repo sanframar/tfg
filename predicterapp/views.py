@@ -114,13 +114,14 @@ def resultadoRegresion(form):
     fechaInicioTest = form.data['fechaIniTest']
     fechaFinTest = form.data['fechaFinTest']
             
-    resultado = regresionPolinomial(select, numeroDias, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    score, prediccion = regresionPolinomial(select, numeroDias, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
     
     template = loader.get_template('predicterapp/resultadoRegresion.html')
     context = {
         'numeroDias': numeroDias,
         'select': select,
-        'resultado': resultado,
+        'resultado': score,
+        'prediccion': prediccion,
     }
     return HttpResponse(template.render(context))
 

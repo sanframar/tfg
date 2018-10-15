@@ -34,7 +34,18 @@ def regresionPolinomial(nombreDatos, numerosDiasAPredecir, fechaInicioTrain, fec
     '''Comprobamos como es de bueno nuestro algoritmo'''
     score = clf.score(X_test, y_test)
     
-    return score
+    '''Creamos una matriz con todo el conjunto de datos y le asignamos la ventana para poder predecir el dia de manana'''
+    matrizCompleta = crearMatriz(datosArray, numerosDiasAPredecir)
+    Y = matrizCompleta[:,matrizCompleta[0].size-1]
+    print(Y)
+    X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
+    print(X)
+    vector = seleccionarVectorPredecir(Y,X)
+    print(vector)
+    prediccion = clf.predict([vector])
+    
+    
+    return score, prediccion
     
     #return  clf.predict(numerosDiasAPredecir)
 
@@ -63,3 +74,8 @@ def vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicio, fechaFin):
     indiceFechaFin = buscarFecha(datosInfer,fechaFin)
     
     return datosArray[indiceFechaInicio: indiceFechaFin]
+
+def seleccionarVectorPredecir(Y, X):
+    vector = X[0][1:]
+    vector = np.insert(vector, vector.size,Y[0])
+    return vector
