@@ -5,7 +5,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def regresionPolinomial(nombreDatos, numerosDiasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
+def regresionPolinomial(nombreDatos, datosAdicionales, numerosDiasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
     '''Leemeos los datos almacenados'''
     ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + nombreDatos + '.infer';
     datosInfer = pd.read_pickle(BASE_DIR + ruta)

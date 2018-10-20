@@ -98,7 +98,8 @@ def formularioParaRegresion(request):
             # process the data in form.cleaned_data as required
             # redirect to a new URL:
             #return HttpResponseRedirect(resultadoRegresion(form))
-            return resultadoRegresion(form)
+            selectMulti = request.GET.getlist('selectMulti')
+            return resultadoRegresion(form, selectMulti)
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -106,7 +107,7 @@ def formularioParaRegresion(request):
         return render(request, 'predicterapp/regresion.html', {'form': form})
     return render(request, 'predicterapp/regresion.html', {'form': form})
 
-def resultadoRegresion(form):
+def resultadoRegresion(form, selectMulti):
     numeroDias = form.data['diasAPredecir']
     select = form.data['select']
     fechaInicioTrain = form.data['fechaIniTrain']
@@ -114,7 +115,7 @@ def resultadoRegresion(form):
     fechaInicioTest = form.data['fechaIniTest']
     fechaFinTest = form.data['fechaFinTest']
             
-    score, prediccion = regresionPolinomial(select, numeroDias, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    score, prediccion = regresionPolinomial(select, selectMulti, numeroDias, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
     
     template = loader.get_template('predicterapp/resultadoRegresion.html')
     context = {
