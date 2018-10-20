@@ -76,6 +76,7 @@ def vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicio, fechaFin):
     return datosArray[indiceFechaInicio: indiceFechaFin]
 
 def seleccionarVectorPredecir(Y, X):
-    vector = X[0][1:]
-    vector = np.insert(vector, vector.size,Y[0])
+    dimension = X.shape
+    vector = X[dimension[0]-1][1:]
+    vector = np.insert(vector, vector.size,Y[dimension[0]-1])
     return vector
