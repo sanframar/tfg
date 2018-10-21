@@ -5,7 +5,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def regresionPolinomial(nombreDatos, datosAdicionales, ventana, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
+def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
     '''Leemeos los datos almacenados'''
     ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + nombreDatos + '.infer';
     datosInferClass = pd.read_pickle(BASE_DIR + ruta)
@@ -36,13 +36,10 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, fechaInicioTrain
     
     matrizCompleta = crearMatrizRegresionCompleta(datosArrayClass, datosInferClass, datosAdicionales, ventana)
     Y = matrizCompleta[:,matrizCompleta[0].size-1]
-    print(Y)
     X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
-    print(X)
     vector = seleccionarVectorPredecir(Y,X)
-    print(vector)
     
-    prediccion = clf.predict([vector])
+    prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), clf)
     
     
     return score, prediccion
@@ -112,6 +109,19 @@ def seleccionarVectorPredecir(Y, X):
     vector = X[dimension[0]-1][1:]
     vector = np.insert(vector, vector.size,Y[dimension[0]-1])
     return vector
+
+def creacionVectoresParaPredecir(datos, dias, clf):
+    result = []
+    valor = clf.predict([datos])
+    print(datos)
+    result.append(valor)
+    for aux in range(dias-1):
+        datos = datos[1:]
+        datos = np.insert(datos, datos.size,valor)
+        valor = clf.predict([datos])
+        print(datos)
+        result.append(valor)
+    return result
 
 def crearMatrizRegresionCompleta(datosArrayClass, datosInferClass, datosAdicionales, ventana):
     primeraFecha = datosInferClass.head(1).reset_index()['Date'][0]

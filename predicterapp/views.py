@@ -108,18 +108,20 @@ def formularioParaRegresion(request):
     return render(request, 'predicterapp/regresion.html', {'form': form})
 
 def resultadoRegresion(form, selectMulti):
-    numeroDias = form.data['diasAPredecir']
+    ventana = form.data['ventana']
+    diasAPredecir = form.data['diasAPredecir']
     select = form.data['select']
     fechaInicioTrain = form.data['fechaIniTrain']
     fechaFinTrain = form.data['fechaFinTrain']
     fechaInicioTest = form.data['fechaIniTest']
     fechaFinTest = form.data['fechaFinTest']
             
-    score, prediccion = regresionPolinomial(select, selectMulti, numeroDias, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    score, prediccion = regresionPolinomial(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
     
     template = loader.get_template('predicterapp/resultadoRegresion.html')
     context = {
-        'numeroDias': numeroDias,
+        'ventana': ventana,
+        'diasAPredecir': diasAPredecir,
         'select': select,
         'resultado': score,
         'prediccion': prediccion,
