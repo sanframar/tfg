@@ -33,7 +33,15 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, fechaInicioTrain
     score = clf.score(X_test, y_test)
     
     '''Creamos una matriz con todo el conjunto de datos y le asignamos la ventana para poder predecir el dia de manana'''
-    vector = [0.75866803,  0.74066392,  0.72266718,  0.72266718, 0.75866803,  0.74066392,  0.72266718,  0.72266718, 0.75866803]
+    
+    matrizCompleta = crearMatrizRegresionCompleta(datosArrayClass, datosInferClass, datosAdicionales, ventana)
+    Y = matrizCompleta[:,matrizCompleta[0].size-1]
+    print(Y)
+    X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
+    print(X)
+    vector = seleccionarVectorPredecir(Y,X)
+    print(vector)
+    
     prediccion = clf.predict([vector])
     
     
@@ -104,3 +112,13 @@ def seleccionarVectorPredecir(Y, X):
     vector = X[dimension[0]-1][1:]
     vector = np.insert(vector, vector.size,Y[dimension[0]-1])
     return vector
+
+def crearMatrizRegresionCompleta(datosArrayClass, datosInferClass, datosAdicionales, ventana):
+    primeraFecha = datosInferClass.head(1).reset_index()['Date'][0]
+    ultimaFecha = datosInferClass.tail(1).reset_index()['Date'][0]
+     
+    matrizTrain, matrizTest = creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, primeraFecha, ultimaFecha, primeraFecha, ultimaFecha, ventana)
+     
+    return matrizTrain
+     
+    
