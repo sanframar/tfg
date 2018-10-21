@@ -5,20 +5,18 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def regresionPolinomial(nombreDatos, datosAdicionales, numerosDiasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
+def regresionPolinomial(nombreDatos, datosAdicionales, ventana, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
     '''Leemeos los datos almacenados'''
     ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + nombreDatos + '.infer';
-    datosInfer = pd.read_pickle(BASE_DIR + ruta)
+    datosInferClass = pd.read_pickle(BASE_DIR + ruta)
     
-    datosArray = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + nombreDatos + '.npy')
+    datosArrayClass = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + nombreDatos + '.npy')
     
-    '''Creamos los vectores correspondientes al conjunto de entrenamiento y al de pruebas'''
-    vectorTrain = vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicioTrain, fechaFinTrain)
-    vectorTest = vectorDatosEntreAmbasFechas(datosArray, datosInfer, fechaInicioTest, fechaFinTest)
+    '''Creamos la matriz con todos los distintos conjuntos de datos seleccionados en el formulario'''
+    matrizTrain, matrizTest = creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana)
     
-    '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
-    matrizTrain = crearMatriz(vectorTrain, numerosDiasAPredecir)
-    matrizTest = crearMatriz(vectorTest, numerosDiasAPredecir)
+    print(matrizTrain.shape)
+    print(matrizTest.shape)
     
     '''Dividimos nuestras matrices de entrenamiento y pruebas para poder entrenar el algoritmo'''
     y_train = matrizTrain[:,matrizTrain[0].size-1]
@@ -35,21 +33,47 @@ def regresionPolinomial(nombreDatos, datosAdicionales, numerosDiasAPredecir, fec
     score = clf.score(X_test, y_test)
     
     '''Creamos una matriz con todo el conjunto de datos y le asignamos la ventana para poder predecir el dia de manana'''
-    matrizCompleta = crearMatriz(datosArray, numerosDiasAPredecir)
-    Y = matrizCompleta[:,matrizCompleta[0].size-1]
-    print(Y)
-    X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
-    print(X)
-    vector = seleccionarVectorPredecir(Y,X)
-    print(vector)
+    vector = [0.75866803,  0.74066392,  0.72266718,  0.72266718, 0.75866803,  0.74066392,  0.72266718,  0.72266718, 0.75866803]
     prediccion = clf.predict([vector])
     
     
     return score, prediccion
+
+
+def creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana):
     
-    #return  clf.predict(numerosDiasAPredecir)
-
-
+    '''Creamos los vectores correspondientes al conjunto de entrenamiento y al de pruebas'''
+    vectorTrain = vectorDatosEntreAmbasFechas(datosArrayClass, datosInferClass, fechaInicioTrain, fechaFinTrain)
+    vectorTest = vectorDatosEntreAmbasFechas(datosArrayClass, datosInferClass, fechaInicioTest, fechaFinTest)
+    
+    '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
+    matrizTrain = crearMatriz(vectorTrain, ventana)
+    matrizTest = crearMatriz(vectorTest, ventana)
+    
+    if len(datosAdicionales) != 0:
+        for aux in datosAdicionales:
+            '''Leemos los datos'''
+            ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + aux + '.infer';
+            datosInferAdicionales = pd.read_pickle(BASE_DIR + ruta)
+            datosArrayAdicionales = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + aux + '.npy')
+            
+            '''Creamos los vectores correspondientes al conjunto de entrenamiento y al de pruebas'''
+            vectorTrainAdicionales = vectorDatosEntreAmbasFechas(datosArrayAdicionales, datosInferAdicionales, fechaInicioTrain, fechaFinTrain)
+            vectorTestAdicionales = vectorDatosEntreAmbasFechas(datosArrayAdicionales, datosInferAdicionales, fechaInicioTest, fechaFinTest)
+            
+            '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
+            matrizTrainAdicionales = crearMatriz(vectorTrainAdicionales, ventana)
+            matrizTestAdicionales = crearMatriz(vectorTestAdicionales, ventana)
+            
+            '''Nos quedamos con la X que es lo unico que nos interesa de las matrices creadas con los datos adicionales'''
+            X_trainAdicionales = np.delete(matrizTrainAdicionales, matrizTrainAdicionales[0].size-1, 1)
+            X_testAdicionales = np.delete(matrizTestAdicionales, matrizTestAdicionales[0].size-1, 1)
+            
+            '''Unimos le conjunto de datos adicionales'''
+            matrizTrain = np.concatenate((X_trainAdicionales, matrizTrain), axis = 1)
+            matrizTest = np.concatenate((X_testAdicionales, matrizTest), axis = 1)
+    
+    return matrizTrain, matrizTest
 
 def crearMatriz(datos, ventana):
     ventana = int(ventana)
