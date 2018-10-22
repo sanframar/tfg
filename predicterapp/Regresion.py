@@ -2,6 +2,7 @@ from sklearn.kernel_ridge import KernelRidge
 import pandas as pd
 import numpy as np
 import os
+from sklearn.metrics import mean_absolute_error
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,6 +32,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     
     '''Comprobamos como es de bueno nuestro algoritmo'''
     score = clf.score(X_test, y_test)
+    mae = mean_absolute_error(y_test, clf.predict(X_test))
     
     '''Creamos una matriz con todo el conjunto de datos y le asignamos la ventana para poder predecir el dia de manana'''
     
@@ -42,7 +44,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), clf)
     
     
-    return score, prediccion
+    return score, mae, prediccion
 
 
 def creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana):

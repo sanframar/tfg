@@ -4,7 +4,7 @@ import datetime
 
 class FormularioRegresion(forms.Form):
     ventana = forms.IntegerField(label='Ventana', max_value=100)
-    diasAPredecir = forms.IntegerField(label='Dias a predecir', max_value=10)
+    diasAPredecir = forms.IntegerField(label='Dias a predecir', max_value=10, min_value=1)
     select = forms.ChoiceField(choices=datosYahooTupla)
     selectMulti = forms.MultipleChoiceField(choices=datosYahooTupla)
     fechaIniTrain = forms.DateField(label='Fecha de inicio (Training)', initial = 'aaaa-mm-dd')
