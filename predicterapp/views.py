@@ -13,6 +13,7 @@ from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
 from predicterapp.PreProcesamiento import preProcesamientoDatos
 from predicterapp.Regresion import regresionPolinomial
 from .forms import FormularioRegresion
+from predicterapp.forms import FormularioClasificacion
 
 # -*- coding: utf-8 -*-
 # Create your views here.
@@ -119,6 +120,60 @@ def resultadoRegresion(form, selectMulti):
     score, mae, prediccion = regresionPolinomial(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
     
     template = loader.get_template('predicterapp/resultadoRegresion.html')
+    context = {
+        'ventana': ventana,
+        'diasAPredecir': diasAPredecir,
+        'select': select,
+        'score': score,
+        'mae': mae,
+        'prediccion': prediccion,
+    }
+    return HttpResponse(template.render(context))
+
+
+def clasificacion ( request ): 
+    datosArray = []
+    form = FormularioClasificacion()
+    for aux in datosYahoo:
+        datosArray.append(aux)
+    template = loader.get_template('predicterapp/clasificacion.html')
+    context = {
+        'datosArray': datosArray,
+        'form': form,
+    }
+    return HttpResponse(template.render(context, request))
+
+def formularioParaClasificacion(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'GET':
+        # create a form instance and populate it with data from the request:
+        form = FormularioClasificacion(request.GET)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # redirect to a new URL:
+            #return HttpResponseRedirect(resultadoRegresion(form))
+            selectMulti = request.GET.getlist('selectMulti')
+            return resultadoClasificacion(form, selectMulti)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = FormularioClasificacion()
+        return render(request, 'predicterapp/clasificacion.html', {'form': form})
+    return render(request, 'predicterapp/clasificacion.html', {'form': form})
+
+def resultadoClasificacion(form, selectMulti):
+    ventana = form.data['ventana']
+    diasAPredecir = form.data['diasAPredecir']
+    select = form.data['select']
+    fechaInicioTrain = form.data['fechaIniTrain']
+    fechaFinTrain = form.data['fechaFinTrain']
+    fechaInicioTest = form.data['fechaIniTest']
+    fechaFinTest = form.data['fechaFinTest']
+            
+    score, mae, prediccion = regresionPolinomial(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    
+    template = loader.get_template('predicterapp/resultadoClasificacion.html')
     context = {
         'ventana': ventana,
         'diasAPredecir': diasAPredecir,
