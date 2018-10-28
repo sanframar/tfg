@@ -9,13 +9,18 @@
 </div>
 
 <div>
-	<a>Numero de dias: {{numeroDias}}</a></br>
+	<a>Ventana usada: {{ventana}}</a></br>
+	<a>Dias predecidos: {{diasAPredecir}}</a></br>
 	<a>Dato seleccionado: {{select}}</a>
 </div>
 
 <div>
-	<a>El score obtenido es: {{resultado}}</a></br>
-	<a>El resultado obtenido es: {{prediccion}}</a></br>
+	<a>El score obtenido es: {{score}}</a></br>
+	<a>El MAE obtenido es: {{mae}}</a></br>
+	{% for aux in prediccion %}
+    	<a>El resultado obtenido para el dia {{ forloop.counter }}: {{aux}}</a></br>
+    </tr>
+	{% endfor %}
 </div>
 
 

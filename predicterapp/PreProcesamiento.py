@@ -8,6 +8,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
+from predicterapp.Utils import *
 
 def preProcesamientoDatos():
     try:
@@ -34,6 +35,23 @@ def indicesNulos(dataframe):
 def normalizacionDataframe(array, dataframeName):
     newArray = preprocessing.normalize(array, axis=0, norm='max')
     guardarArray(newArray, dataframeName)
+    
+#Metodo que desnormaliza los datos para mostrarlos al usuario
+def desNormalizar(valorBaseSinNormalizar, valorBaseNormalizado, datosArray):
+    result = []
+    for idx, value in enumerate(datosArray):
+        #print(value)
+        print(idx)
+        if idx == 0:
+            diferenciaPorcentaje = diferenciaPorcentual(value, valorBaseNormalizado)
+            valor = aplicarPorcentaje(valorBaseSinNormalizar, diferenciaPorcentaje)
+            result.append(valor)
+        if idx > 0:
+            diferenciaPorcentaje = diferenciaPorcentual(value, datosArray[idx-1])
+            valor = aplicarPorcentaje(result[len(result)-1], diferenciaPorcentaje)
+            result.append(valor)
+            
+    return result
 
 def guardarArray(array, dataframeName):
     np.save(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + dataframeName, array)

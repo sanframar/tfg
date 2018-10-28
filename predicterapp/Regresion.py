@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import os
 from sklearn.metrics import mean_absolute_error
+from predicterapp.Utils import *
+from predicterapp.PreProcesamiento import desNormalizar
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,6 +44,8 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     vector = seleccionarVectorPredecir(Y,X)
     
     prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), clf)
+    
+    prediccion = desNormalizar(datosInferClass.tail(1).reset_index()['Close'][0], datosArrayClass[datosArrayClass.size-1], prediccion)
     
     
     return score, mae, prediccion
