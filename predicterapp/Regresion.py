@@ -41,7 +41,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     matrizCompleta = crearMatrizRegresionCompleta(datosArrayClass, datosInferClass, datosAdicionales, ventana)
     Y = matrizCompleta[:,matrizCompleta[0].size-1]
     X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
-    vector = seleccionarVectorPredecir(Y,X)
+    vector = X[0:1, :][0]
     
     prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), clf)
     
@@ -53,13 +53,13 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
 
 def creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana):
     
-    '''Creamos los vectores correspondientes al conjunto de entrenamiento y al de pruebas'''
-    vectorTrain = vectorDatosEntreAmbasFechas(datosArrayClass, datosInferClass, fechaInicioTrain, fechaFinTrain)
-    vectorTest = vectorDatosEntreAmbasFechas(datosArrayClass, datosInferClass, fechaInicioTest, fechaFinTest)
+    '''Creamos la matriz completa con todos los dias disponibles en el conjunto de datos'''
+    vectorCompleto = vectorCompletoInvertido(datosArrayClass)
+    matrizCompleta = crearMatriz(vectorCompleto, ventana)
     
-    '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
-    matrizTrain = crearMatriz(vectorTrain, ventana)
-    matrizTest = crearMatriz(vectorTest, ventana)
+    '''Creamos las matrices correspondientes al conjunto de entrenamiento y de pruebas'''
+    matrizTrain, matrizTest = matrizEntrenamientoTest(matrizCompleta, datosInferClass, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    
     
     if len(datosAdicionales) != 0:
         for aux in datosAdicionales:
@@ -68,13 +68,12 @@ def creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales
             datosInferAdicionales = pd.read_pickle(BASE_DIR + ruta)
             datosArrayAdicionales = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + aux + '.npy')
             
-            '''Creamos los vectores correspondientes al conjunto de entrenamiento y al de pruebas'''
-            vectorTrainAdicionales = vectorDatosEntreAmbasFechas(datosArrayAdicionales, datosInferAdicionales, fechaInicioTrain, fechaFinTrain)
-            vectorTestAdicionales = vectorDatosEntreAmbasFechas(datosArrayAdicionales, datosInferAdicionales, fechaInicioTest, fechaFinTest)
+            '''Creamos el vector y la matriz completa de los datos adicionales'''
+            vectorCompletoDatosAdicionales = vectorCompletoInvertido(datosArrayAdicionales)
+            matrizCompletaDatosAdicionales = crearMatriz(vectorCompletoDatosAdicionales, ventana)
             
             '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
-            matrizTrainAdicionales = crearMatriz(vectorTrainAdicionales, ventana)
-            matrizTestAdicionales = crearMatriz(vectorTestAdicionales, ventana)
+            matrizTrainAdicionales, matrizTestAdicionales = matrizEntrenamientoTest(matrizCompletaDatosAdicionales, datosInferAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
             
             '''Nos quedamos con la X que es lo unico que nos interesa de las matrices creadas con los datos adicionales'''
             X_trainAdicionales = np.delete(matrizTrainAdicionales, matrizTrainAdicionales[0].size-1, 1)
@@ -136,5 +135,20 @@ def crearMatrizRegresionCompleta(datosArrayClass, datosInferClass, datosAdiciona
     matrizTrain, matrizTest = creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, primeraFecha, ultimaFecha, primeraFecha, ultimaFecha, ventana)
      
     return matrizTrain
-     
+
+def vectorCompletoInvertido(datosArray):
+    return np.flip(datosArray, axis=0)
+
+def matrizEntrenamientoTest(matrizCompleta, datosInfer, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
+    '''Localizamos los indices de las fechas pasadas en los datos de tipo infer'''
+    indiceTrainInicio =  buscarFecha(datosInfer, fechaInicioTrain)
+    indiceTrainFin =  buscarFecha(datosInfer, fechaFinTrain)
+    indiceTestInicio =  buscarFecha(datosInfer, fechaInicioTest)
+    indiceTestFin =  buscarFecha(datosInfer, fechaFinTest)
+    
+    '''Creamos las matrices de train y test'''
+    matrizTrain = matrizCompleta[indiceTrainInicio:indiceTrainFin, :]
+    matrizTest = matrizCompleta[indiceTestInicio:indiceTestFin, :]
+    
+    return matrizTrain, matrizTest
     
