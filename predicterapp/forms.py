@@ -18,7 +18,7 @@ class FormularioRegresion(forms.Form):
 class FormularioClasificacion(forms.Form):
     ventana = forms.IntegerField(label='Ventana', max_value=100)
     diasAPredecir = forms.IntegerField(label='Dias a predecir', max_value=10, min_value=1)
-    epsilon = forms.IntegerField(label='Epsilon', max_value=5, min_value=0)
+    epsilon = forms.DecimalField(label='Epsilon')
     select = forms.ChoiceField(choices=datosYahooTupla)
     selectMulti = forms.MultipleChoiceField(choices=datosYahooTupla)
     fechaIniTrain = forms.DateField(label='Fecha de inicio (Training)', initial = 'aaaa-mm-dd')

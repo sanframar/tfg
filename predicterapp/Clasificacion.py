@@ -10,7 +10,7 @@ from predicterapp.Regresion import *
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
+def algoritmoClasificacion(nombreDatos, datosAdicionales, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, epsilon):
     '''Leemeos los datos almacenados'''
     ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + nombreDatos + '.infer';
     datosInferClass = pd.read_pickle(BASE_DIR + ruta)
@@ -29,14 +29,18 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     y_test = matrizTest[:,matrizTest[0].size-1]
     X_test = np.delete(matrizTest, matrizTest[0].size-1, 1)
     
+    '''Modificamos el resultado de nuestro conjunto de datos para clasificacion'''
+    y_train = modificarYParaClasificacion(y_train, float(epsilon))
+    y_test = modificarYParaClasificacion(y_test, float(epsilon))
+    
     '''Declaramos nuestro algoritmo de regresion y lo entrenamos con el conjunto de entrenamiento'''
-    from sklearn.kernel_ridge import KernelRidge
-    clf = KernelRidge(kernel="polynomial")
-    clf.fit(X_train, y_train)
+    from sklearn.neighbors import KNeighborsClassifier
+    neigh = KNeighborsClassifier(n_neighbors=3)
+    neigh.fit(X_train, y_train) 
     
     '''Comprobamos como es de bueno nuestro algoritmo'''
-    score = clf.score(X_test, y_test)
-    mae = mean_absolute_error(y_test, clf.predict(X_test))
+    score = neigh.score(X_test, y_test)
+    mae = mean_absolute_error(y_test, neigh.predict(X_test))
     
     '''Creamos una matriz con todo el conjunto de datos y le asignamos la ventana para poder predecir el dia de manana'''
     
@@ -45,9 +49,27 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
     vector = X[0:1, :][0]
     
-    prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), clf)
-    
-    prediccion = desNormalizar(datosInferClass.tail(1).reset_index()['Close'][0], datosArrayClass[datosArrayClass.size-1], prediccion)
-    
+    prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), neigh)
     
     return score, mae, prediccion
+
+
+
+def aumenDismOIgual(valueAfter, valueNext, alfa):
+    valueCalculate = valueNext-valueAfter
+    if(valueCalculate>0 and valueCalculate>alfa):
+        return 1
+    if(valueCalculate<0 and abs(valueCalculate)>alfa):
+        return -1
+    if(abs(valueCalculate)<alfa):
+        return 0
+    
+def modificarYParaClasificacion(datosArray, alfa):
+    result = []
+    for index, value in enumerate(datosArray):
+        '''El primer valor vamos a suponer que no varia por lo que le ponemos un 0'''
+        if(index==0):
+            result.append(0)
+        if(index>0):
+            result.append(aumenDismOIgual(datosArray[index-1], value, alfa))
+    return result

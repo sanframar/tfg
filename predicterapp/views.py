@@ -14,6 +14,7 @@ from predicterapp.PreProcesamiento import preProcesamientoDatos
 from predicterapp.Regresion import regresionPolinomial
 from .forms import FormularioRegresion
 from predicterapp.forms import FormularioClasificacion
+from predicterapp.Clasificacion import algoritmoClasificacion
 
 # -*- coding: utf-8 -*-
 # Create your views here.
@@ -165,13 +166,14 @@ def formularioParaClasificacion(request):
 def resultadoClasificacion(form, selectMulti):
     ventana = form.data['ventana']
     diasAPredecir = form.data['diasAPredecir']
+    epsilon = form.data['epsilon']
     select = form.data['select']
     fechaInicioTrain = form.data['fechaIniTrain']
     fechaFinTrain = form.data['fechaFinTrain']
     fechaInicioTest = form.data['fechaIniTest']
     fechaFinTest = form.data['fechaFinTest']
             
-    score, mae, prediccion = regresionPolinomial(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    score, mae, prediccion = algoritmoClasificacion(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, epsilon)
     
     template = loader.get_template('predicterapp/resultadoClasificacion.html')
     context = {
