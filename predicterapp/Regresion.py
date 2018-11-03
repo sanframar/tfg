@@ -141,14 +141,15 @@ def vectorCompletoInvertido(datosArray):
 
 def matrizEntrenamientoTest(matrizCompleta, datosInfer, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest):
     '''Localizamos los indices de las fechas pasadas en los datos de tipo infer'''
-    indiceTrainInicio =  buscarFecha(datosInfer, fechaInicioTrain)
-    indiceTrainFin =  buscarFecha(datosInfer, fechaFinTrain)
-    indiceTestInicio =  buscarFecha(datosInfer, fechaInicioTest)
-    indiceTestFin =  buscarFecha(datosInfer, fechaFinTest)
+    datosInferInvertidos = datosInfer.iloc[::-1]
+    indiceTrainInicio =  buscarFecha(datosInferInvertidos, fechaInicioTrain)
+    indiceTrainFin =  buscarFecha(datosInferInvertidos, fechaFinTrain)
+    indiceTestInicio =  buscarFecha(datosInferInvertidos, fechaInicioTest)
+    indiceTestFin =  buscarFecha(datosInferInvertidos, fechaFinTest)
     
     '''Creamos las matrices de train y test'''
-    matrizTrain = matrizCompleta[indiceTrainInicio:indiceTrainFin, :]
-    matrizTest = matrizCompleta[indiceTestInicio:indiceTestFin, :]
+    matrizTrain = matrizCompleta[indiceTrainFin:indiceTrainInicio, :]
+    matrizTest = matrizCompleta[indiceTestFin:indiceTestInicio, :]
     
     return matrizTrain, matrizTest
     
