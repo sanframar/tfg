@@ -7,10 +7,10 @@
 {% include "predicterapp/header.html" %}    
 </div>
 
-<form action="/predicterapp/clasificacion/formulario" method="get">
+<form action="/predicterapp/clasificacion/formulario" method="get" class="formulario">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
+    {{ form.as_p }}
+    <input type="submit" value="Calcular">
 </form>
 
 </html>
