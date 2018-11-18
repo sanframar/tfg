@@ -40,7 +40,6 @@ def algoritmoClasificacion(nombreDatos, datosAdicionales, ventana, diasAPredecir
     
     '''Comprobamos como es de bueno nuestro algoritmo'''
     score = neigh.score(X_test, y_test)
-    mae = mean_absolute_error(y_test, neigh.predict(X_test))
     
     '''Creamos una matriz con todo el conjunto de datos y le asignamos la ventana para poder predecir el dia de manana'''
     
@@ -51,7 +50,7 @@ def algoritmoClasificacion(nombreDatos, datosAdicionales, ventana, diasAPredecir
     
     prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), neigh)
     
-    return score, mae, prediccion
+    return score, prediccion
 
 
 

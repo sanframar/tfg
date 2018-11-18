@@ -173,7 +173,7 @@ def resultadoClasificacion(form, selectMulti):
     fechaInicioTest = form.data['fechaIniTest']
     fechaFinTest = form.data['fechaFinTest']
             
-    score, mae, prediccion = algoritmoClasificacion(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, epsilon)
+    score, prediccion = algoritmoClasificacion(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, epsilon)
     
     template = loader.get_template('predicterapp/resultadoClasificacion.html')
     context = {
@@ -181,7 +181,6 @@ def resultadoClasificacion(form, selectMulti):
         'diasAPredecir': diasAPredecir,
         'select': select,
         'score': score,
-        'mae': mae,
         'prediccion': prediccion,
     }
     return HttpResponse(template.render(context))
