@@ -18,8 +18,8 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     '''Creamos la matriz con todos los distintos conjuntos de datos seleccionados en el formulario'''
     matrizTrain, matrizTest = creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana)
     
-    print(matrizTrain.shape)
-    print(matrizTest.shape)
+    print("Matriz train", matrizTrain.shape)
+    print("Matriz test", matrizTest.shape)
     
     '''Dividimos nuestras matrices de entrenamiento y pruebas para poder entrenar el algoritmo'''
     y_train = matrizTrain[:,matrizTrain[0].size-1]
@@ -42,6 +42,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     Y = matrizCompleta[:,matrizCompleta[0].size-1]
     X = np.delete(matrizCompleta, matrizCompleta[0].size-1, 1)
     vector = X[0:1, :][0]
+    print("Vector predecir", vector)
     
     prediccion = creacionVectoresParaPredecir(vector, int(float(diasAPredecir)), clf)
     
@@ -118,13 +119,11 @@ def seleccionarVectorPredecir(Y, X):
 def creacionVectoresParaPredecir(datos, dias, clf):
     result = []
     valor = clf.predict([datos])
-    print(datos)
     result.append(valor)
     for aux in range(dias-1):
         datos = datos[1:]
         datos = np.insert(datos, datos.size,valor)
         valor = clf.predict([datos])
-        print(datos)
         result.append(valor)
     return result
 

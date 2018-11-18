@@ -10,8 +10,8 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-datosYahoo = {"BBVA" : "BBVA.MC", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC"}
-datosYahooTupla = (('BBVA', 'BBVA'), ('Santander', 'Santander'), ('Sabadell', 'Sabadell'))
+datosYahoo = {"BBVA" : "BBVA.MC", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC", "Bankinter" : "BKT.MC", "ACCIONA" : "ANA.MC", "ENDESA" : "ELE.MC", "IBERDROLA" : "IBE.MC", "INDRA" : "IDR.MC", "MAPFRE" : "MAP.MC", "REPSOL" : "REP.MC", "Telefonica" : "TEF.MC"}
+datosYahooTupla = (('BBVA', 'BBVA'), ('Santander', 'Santander'), ('Sabadell', 'Sabadell'), ('Bankinter', 'Bankinter'), ('ACCIONA', 'ACCIONA'), ('ENDESA', 'ENDESA'), ('IBERDROLA', 'IBERDROLA'), ('INDRA', 'INDRA'), ('MAPFRE', 'MAPFRE'), ('REPSOL', 'REPSOL'), ('Telefonica', 'Telefonica'))
 
 def obtenerDatosApi():
     try:
@@ -62,7 +62,7 @@ def actualizarDatos():
     
 def obtenicionDeDatos():
     '''Seleccionamos las fechas de las que queremos obtener los datos'''
-    start = datetime.datetime(2000, 1, 1)
+    start = datetime.datetime(2003, 1, 6)
     end = datetime.datetime.now()
     
     for x in datosYahoo:
