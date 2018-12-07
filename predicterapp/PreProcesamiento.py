@@ -13,9 +13,11 @@ from predicterapp.Utils import *
 def preProcesamientoDatos():
     try:
         for x in datosYahoo:
-            dataframe = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
+            dataframeOld = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
+            dataframe = diasFaltantes(dataframeOld)
             arrayNulos = indicesNulos(dataframe)
             arraySinNulos = calcularValoresNaN(dataframe.values, arrayNulos, x)
+            print(arraySinNulos.size)
             normalizacionDataframe(arraySinNulos, x)
     except:
         print('Error al realizar el pre procesamiento')
@@ -41,7 +43,7 @@ def desNormalizar(valorBaseSinNormalizar, valorBaseNormalizado, datosArray):
     result = []
     for idx, value in enumerate(datosArray):
         #print(value)
-        print(idx)
+        #print(idx)
         if idx == 0:
             diferenciaPorcentaje = diferenciaPorcentual(value, valorBaseNormalizado)
             valor = aplicarPorcentaje(valorBaseSinNormalizar, diferenciaPorcentaje)
@@ -118,11 +120,12 @@ def nanEnMedio(array, indicesNaN, aux):
     array[aux] = newValue
 
 def diasFaltantes(dataframe):
-    diasLaborables = pd.bdate_range('2003-01-01', '2018-11-19')
+    end = datetime.datetime.now().strftime("%Y-%m-%d")
+    diasLaborables = pd.bdate_range('2003-01-01', '2018-12-07')
     for aux in diasLaborables:
         find = buscarFecha(aux, dataframe)
         if(find==-1):
-            dataframe.loc[aux] = 'NaN'
+            dataframe.loc[aux] = np.NaN
     dataframe = dataframe.sort_index()
     return dataframe
 

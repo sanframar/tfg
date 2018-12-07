@@ -25,17 +25,21 @@ def  index ( request ):
 
 def datos(request):
     obtenerDatosApi()
+    preProcesamientoDatos()
     BBDD = []
     try:
         for x in datosYahoo:
-            datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
-        
-            fechaInicio = datos.head(1).reset_index()['Date'][0]
-            fechaFin = datos.tail(1).reset_index()['Date'][0]
+            #datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
+            datos = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
+            #fechaInicio = datos.head(1).reset_index()['Date'][0]
+            #fechaFin = datos.tail(1).reset_index()['Date'][0]
+            #tamDatos = datos.size
+            
+            fechaInicio = '2003-01-01'
+            fechaFin = '2018-12-07'
             tamDatos = datos.size
             tupla = [x, fechaInicio, fechaFin, tamDatos]
             BBDD.append(tupla)
-            print(BBDD)
     except:
         fechaInicio = "Sin fecha inicio"
         fechaFin = "Sin fecha fin"
@@ -48,7 +52,7 @@ def datos(request):
     return HttpResponse(template.render(context, request))
 
 def preProcesamiento(request):
-    preProcesamientoDatos()
+    #preProcesamientoDatos()
     BBDD = []
     try:
         for x in datosYahoo:
@@ -65,7 +69,7 @@ def preProcesamiento(request):
             valorMinimoDataframe = datosDataframe.loc[datosDataframe['Close'].idxmin()][0]
             valorMaximoDataframe = datosDataframe.loc[datosDataframe['Close'].idxmax()][0]
             valorMedioDataframe = datosDataframe['Close'].median()
-            valoresNaNDataframe = datosDataframe['Close'].isnull().sum()
+            valoresNaNDataframe = datosDataframe['Close'].isnull().sum()  + (datosArray.size - datosDataframe.size)
             
             tupla = [x, valoresNaNArray, valorMinimoArray, valorMaximoArray, valorMedioArray, valorMinimoDataframe, valorMaximoDataframe, valorMedioDataframe, valoresNaNDataframe]
             BBDD.append(tupla)
