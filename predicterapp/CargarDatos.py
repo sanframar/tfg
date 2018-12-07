@@ -62,7 +62,7 @@ def actualizarDatos():
     
 def obtenicionDeDatos():
     '''Seleccionamos las fechas de las que queremos obtener los datos'''
-    start = datetime.datetime(2003, 1, 6)
+    start = datetime.datetime(2003, 1, 1)
     end = datetime.datetime.now()
     
     for x in datosYahoo:

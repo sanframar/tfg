@@ -116,3 +116,19 @@ def nanEnMedio(array, indicesNaN, aux):
     newValue = (nextValue + afterValue)/2
     print(newValue)
     array[aux] = newValue
+
+def diasFaltantes(dataframe):
+    diasLaborables = pd.bdate_range('2003-01-01', '2018-11-19')
+    for aux in diasLaborables:
+        find = buscarFecha(aux, dataframe)
+        if(find==-1):
+            dataframe.loc[aux] = 'NaN'
+    dataframe = dataframe.sort_index()
+    return dataframe
+
+def buscarFecha(fecha, dataframe):
+    try:
+        valor = dataframe.loc[fecha]
+        return 1
+    except:
+        return -1
