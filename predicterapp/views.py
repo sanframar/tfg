@@ -15,7 +15,9 @@ from predicterapp.Regresion import regresionPolinomial
 from .forms import FormularioRegresion
 from predicterapp.forms import FormularioClasificacion
 from predicterapp.Clasificacion import algoritmoClasificacion
+from predicterapp.CargarDatosBCE import obtenerDatosBCE
 
+datosYahooConEuro = {"BBVA" : "BBVA.MC", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC", "Bankinter" : "BKT.MC", "ACCIONA" : "ANA.MC", "ENDESA" : "ELE.MC", "IBERDROLA" : "IBE.MC", "INDRA" : "IDR.MC", "MAPFRE" : "MAP.MC", "REPSOL" : "REP.MC", "Telefonica" : "TEF.MC", "DOLARVSEURO": "DOLARVSEURO"}
 # -*- coding: utf-8 -*-
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,19 +27,21 @@ def  index ( request ):
 
 def datos(request):
     obtenerDatosApi()
+    obtenerDatosBCE()
     preProcesamientoDatos()
     BBDD = []
     try:
-        for x in datosYahoo:
-            #datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
-            datos = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
-            #fechaInicio = datos.head(1).reset_index()['Date'][0]
-            #fechaFin = datos.tail(1).reset_index()['Date'][0]
+        for x in datosYahooConEuro:
+            datos = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
+            #datos = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
+            fechaInicio = datos.head(1).reset_index()['Date'][0]
+            fechaFin = datos.tail(1).reset_index()['Date'][0]
+            tamDatos = datos.size
+            
+            #fechaInicio = '2003-01-01'
+            #fechaFin = '2018-12-07'
             #tamDatos = datos.size
             
-            fechaInicio = '2003-01-01'
-            fechaFin = '2018-12-07'
-            tamDatos = datos.size
             tupla = [x, fechaInicio, fechaFin, tamDatos]
             BBDD.append(tupla)
     except:
@@ -55,7 +59,7 @@ def preProcesamiento(request):
     #preProcesamientoDatos()
     BBDD = []
     try:
-        for x in datosYahoo:
+        for x in datosYahooConEuro:
             datosArray = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + x + '.npy')
             datosDataframe = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
         

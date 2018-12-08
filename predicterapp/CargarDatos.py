@@ -11,7 +11,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 datosYahoo = {"BBVA" : "BBVA.MC", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC", "Bankinter" : "BKT.MC", "ACCIONA" : "ANA.MC", "ENDESA" : "ELE.MC", "IBERDROLA" : "IBE.MC", "INDRA" : "IDR.MC", "MAPFRE" : "MAP.MC", "REPSOL" : "REP.MC", "Telefonica" : "TEF.MC"}
-datosYahooTupla = (('BBVA', 'BBVA'), ('Santander', 'Santander'), ('Sabadell', 'Sabadell'), ('Bankinter', 'Bankinter'), ('ACCIONA', 'ACCIONA'), ('ENDESA', 'ENDESA'), ('IBERDROLA', 'IBERDROLA'), ('INDRA', 'INDRA'), ('MAPFRE', 'MAPFRE'), ('REPSOL', 'REPSOL'), ('Telefonica', 'Telefonica'))
+datosYahooTupla = (('BBVA', 'BBVA'), ('Santander', 'Santander'), ('Sabadell', 'Sabadell'), ('Bankinter', 'Bankinter'), ('ACCIONA', 'ACCIONA'), ('ENDESA', 'ENDESA'), ('IBERDROLA', 'IBERDROLA'), ('INDRA', 'INDRA'), ('MAPFRE', 'MAPFRE'), ('REPSOL', 'REPSOL'), ('Telefonica', 'Telefonica'), ('DolarVsEuro', 'DolarVsEuro'))
 
 def obtenerDatosApi():
     try:

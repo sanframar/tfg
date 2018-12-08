@@ -10,14 +10,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from predicterapp.CargarDatos import obtenerDatosApi, datosYahoo
 from predicterapp.Utils import *
 
+datosYahooConEuro = {"BBVA" : "BBVA.MC","DOLARVSEURO": "DOLARVSEURO", "Santander" : "SAN.MC", "Sabadell" : "SAB.MC", "Bankinter" : "BKT.MC", "ACCIONA" : "ANA.MC", "ENDESA" : "ELE.MC", "IBERDROLA" : "IBE.MC", "INDRA" : "IDR.MC", "MAPFRE" : "MAP.MC", "REPSOL" : "REP.MC", "Telefonica" : "TEF.MC"}
+
 def preProcesamientoDatos():
     try:
-        for x in datosYahoo:
+        for x in datosYahooConEuro:
             dataframeOld = pd.read_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
             dataframe = diasFaltantes(dataframeOld)
+            '''Guardamos el nuevo dataframe'''
+            dataframe.to_pickle(BASE_DIR + '\predicterapp\static\predicterapp\myDates\dataframe\\' + x + '.infer')
+            
             arrayNulos = indicesNulos(dataframe)
             arraySinNulos = calcularValoresNaN(dataframe.values, arrayNulos, x)
-            print(arraySinNulos.size)
             normalizacionDataframe(arraySinNulos, x)
     except:
         print('Error al realizar el pre procesamiento')
@@ -42,8 +46,6 @@ def normalizacionDataframe(array, dataframeName):
 def desNormalizar(valorBaseSinNormalizar, valorBaseNormalizado, datosArray):
     result = []
     for idx, value in enumerate(datosArray):
-        #print(value)
-        #print(idx)
         if idx == 0:
             diferenciaPorcentaje = diferenciaPorcentual(value, valorBaseNormalizado)
             valor = aplicarPorcentaje(valorBaseSinNormalizar, diferenciaPorcentaje)
@@ -83,7 +85,6 @@ def nanEnInicio(array, indicesNaN, aux):
             break
     
     newValue = (nextValue + nextValue2)/2
-    print(newValue)
     array[aux] = newValue
     
 def nanEnFinal(array, indicesNaN, aux):
@@ -100,7 +101,6 @@ def nanEnFinal(array, indicesNaN, aux):
             break
             
     newValue = (nextValue + nextValue2)/2
-    print(newValue)
     array[aux] = newValue
 
 def nanEnMedio(array, indicesNaN, aux):
@@ -116,7 +116,6 @@ def nanEnMedio(array, indicesNaN, aux):
             afterIndice = aux-idx-1
     
     newValue = (nextValue + afterValue)/2
-    print(newValue)
     array[aux] = newValue
 
 def diasFaltantes(dataframe):
