@@ -13,7 +13,7 @@ class UtilsTests(TestCase):
             """
             valorNuevo = 10
             valorAnterior = 10
-            self.assertIs(diferenciaPorcentual(valorNuevo, valorAnterior), 0)
+            self.assertEqual(diferenciaPorcentual(valorNuevo, valorAnterior), 0)
 
     def test_diferencia_porcentual_menor(self):
             """

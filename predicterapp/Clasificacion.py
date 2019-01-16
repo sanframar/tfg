@@ -35,7 +35,11 @@ def algoritmoClasificacion(nombreDatos, datosAdicionales, ventana, diasAPredecir
     
     '''Declaramos nuestro algoritmo de regresion y lo entrenamos con el conjunto de entrenamiento'''
     from sklearn.neighbors import KNeighborsClassifier
-    neigh = KNeighborsClassifier(n_neighbors=3)
+    #neigh = KNeighborsClassifier(n_neighbors=3)
+    
+    from sklearn.linear_model import LogisticRegression
+    neigh = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial')
+    
     neigh.fit(X_train, y_train) 
     
     '''Comprobamos como es de bueno nuestro algoritmo'''

@@ -29,7 +29,10 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     
     '''Declaramos nuestro algoritmo de regresion y lo entrenamos con el conjunto de entrenamiento'''
     from sklearn.kernel_ridge import KernelRidge
-    clf = KernelRidge(kernel="polynomial")
+    #clf = KernelRidge(kernel="polynomial")
+    from sklearn import linear_model
+    clf = linear_model.LinearRegression()
+    
     clf.fit(X_train, y_train)
     
     '''Comprobamos como es de bueno nuestro algoritmo'''
