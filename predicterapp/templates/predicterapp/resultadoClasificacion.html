@@ -2,12 +2,13 @@
 
 <!DOCTYPE html>
 <html lang ="es">
-<link rel="stylesheet" href="{% static 'predicterapp/style.css' %}">
+<link rel="stylesheet" href="{% static 'predicterapp/body.css' %}">
 
 <div class="basic">
 {% include "predicterapp/header.html" %}    
 </div>
 
+<div class="formularioResultado">
 <div>
 	<a>Ventana usada: {{ventana}}</a></br>
 	<a>Dias predecidos: {{diasAPredecir}}</a></br>
@@ -21,7 +22,7 @@
     </tr>
 	{% endfor %}
 </div>
-
+</div>
 
 
 <div class="divfooter">

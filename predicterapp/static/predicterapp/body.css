@@ -8,13 +8,53 @@
 	float:left;
 }
 
-.formulario{
-	padding-left: 1%
+.formularioDiv{
+	margin: auto;
+	width: 50%;
+	text-align:center;
+	margin-top: 10px;
+	padding: 10px;
+	background-color: #DFEEE1;
+}
+
+.formularioResultado{
+	margin: auto;
+	width: 50%;
+	text-align:center;
+	margin-top: 10px;
+	padding: 10px;
+	background-color: #DFEEE1;
 }
 
 body{
 	background-color: #99d6ff;
 }
+
+/* ======= Tabla ======= */
+#tablaDatosBBDD {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#tablaDatosBBDD td, #tablaDatosBBDD th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tablaDatosBBDD tr:nth-child(even){background-color: #f2f2f2;}
+#tablaDatosBBDD tr:nth-child(odd){background-color: #99ff99;}
+
+#tablaDatosBBDD tr:hover {background-color: #ddd;}
+
+#tablaDatosBBDD th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
 
 /* ======= Slider ======= */
 /* Slideshow container */
