@@ -31,7 +31,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     from sklearn.kernel_ridge import KernelRidge
     #clf = KernelRidge(kernel="polynomial")
     from sklearn import linear_model
-    clf = seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test)
+    clf = seleccionarMejorAlgoritmoRegresion(X_train, y_train, X_test, y_test)
     
     clf.fit(X_train, y_train)
     
@@ -51,8 +51,22 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     
     prediccion = desNormalizar(datosInferClass.tail(1).reset_index()['Close'][0], datosArrayClass[datosArrayClass.size-1], prediccion)
     
+    scoreArray = []
+    maeArray = []
     
-    return score, mae, prediccion
+    scoreArray.append(score)
+    maeArray.append(mae)
+    
+    '''Calculo del score de los dias siguientes'''
+    if int(diasAPredecir) >= 2:
+        arrayBucle = (np.arange(int(diasAPredecir)-1))+1
+        for aux in arrayBucle:
+            matrizTrainN, matrizTestN = creacionMatrizDePrediccionDeErroresFuturos(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana, aux)
+            scoreDiasPosteriores, maeDiasPosteriores = calcularScoreMaeDiasAnteriores(matrizTrainN, matrizTestN, clf)
+            scoreArray.append(scoreDiasPosteriores)
+            maeArray.append(maeDiasPosteriores)        
+    
+    return scoreArray, maeArray, prediccion
 
 
 def creacionMatrizDeRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana):
@@ -155,7 +169,7 @@ def matrizEntrenamientoTest(matrizCompleta, datosInfer, fechaInicioTrain, fechaF
     
     return matrizTrain, matrizTest
     
-def seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test):
+def seleccionarMejorAlgoritmoRegresion(X_train, y_train, X_test, y_test):
     scores = {}
     '''Importacion de todos los algoritmos que vamos a implementar'''
     from sklearn.kernel_ridge import KernelRidge
@@ -196,4 +210,62 @@ def seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test):
     
     import operator
     return max(scores.items(), key=operator.itemgetter(1))[0]
+
+def creacionMatrizDePrediccionDeErroresFuturos(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana, dia):
+    
+    '''Sumamos los dias a la ventana para no quedarnos sin matriz al reducirla'''
+    ventana = int(ventana) + dia
+    
+    '''Creamos la matriz completa con todos los dias disponibles en el conjunto de datos'''
+    vectorCompleto = vectorCompletoInvertido(datosArrayClass)
+    matrizCompleta = crearMatriz(vectorCompleto, ventana)
+    
+    '''Eliminamos tantas columnas como dias, teniendo cuidado de no eliminar la primera columna que sera el valor a predecir'''
+    columnasBorrar = np.arange(dia)
+    matrizCompleta = np.delete(matrizCompleta, matrizCompleta[0].size-2-columnasBorrar, 1)
+    
+    '''Creamos las matrices correspondientes al conjunto de entrenamiento y de pruebas'''
+    matrizTrain, matrizTest = matrizEntrenamientoTest(matrizCompleta, datosInferClass, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+    
+    
+    if len(datosAdicionales) != 0:
+        for aux in datosAdicionales:
+            '''Leemos los datos'''
+            ruta = '\predicterapp\static\predicterapp\myDates\dataframe\\' + aux + '.infer';
+            datosInferAdicionales = pd.read_pickle(BASE_DIR + ruta)
+            datosArrayAdicionales = np.load(BASE_DIR + '\\predicterapp\\static\\predicterapp\\myDates\\narray\\' + aux + '.npy')
+            
+            '''Creamos el vector y la matriz completa de los datos adicionales'''
+            vectorCompletoDatosAdicionales = vectorCompletoInvertido(datosArrayAdicionales)
+            matrizCompletaDatosAdicionales = crearMatriz(vectorCompletoDatosAdicionales, ventana)
+            
+            '''Creamos las matrices correspondientes a los vectores de entrenamiento y a los de pruebas'''
+            matrizTrainAdicionales, matrizTestAdicionales = matrizEntrenamientoTest(matrizCompletaDatosAdicionales, datosInferAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest)
+            
+            '''Nos quedamos con la X que es lo unico que nos interesa de las matrices creadas con los datos adicionales'''
+            X_trainAdicionales = np.delete(matrizTrainAdicionales, matrizTrainAdicionales[0].size-1, 1)
+            X_testAdicionales = np.delete(matrizTestAdicionales, matrizTestAdicionales[0].size-1, 1)
+            
+            '''Eliminamos tantas columnas como dias, teniendo cuidado de no eliminar la primera columna que sera el valor a predecir'''
+            X_trainAdicionales = np.delete(X_trainAdicionales, X_trainAdicionales[0].size-1-columnasBorrar, 1)
+            X_testAdicionales = np.delete(X_testAdicionales, X_testAdicionales[0].size-1-columnasBorrar, 1)
+            
+            '''Unimos le conjunto de datos adicionales'''
+            matrizTrain = np.concatenate((X_trainAdicionales, matrizTrain), axis = 1)
+            matrizTest = np.concatenate((X_testAdicionales, matrizTest), axis = 1)
+    
+    return matrizTrain, matrizTest
+
+def calcularScoreMaeDiasAnteriores(matrizTrainN, matrizTestN, clf):
+    y_trainN = matrizTrainN[:,matrizTrainN[0].size-1]
+    X_trainN = np.delete(matrizTrainN, matrizTrainN[0].size-1, 1)
+    y_testN = matrizTestN[:,matrizTestN[0].size-1]
+    X_testN = np.delete(matrizTestN, matrizTestN[0].size-1, 1)
+    
+    clf.fit(X_trainN, y_trainN)
+    
+    scoreN = clf.score(X_testN, y_testN)
+    maeN = mean_absolute_error(y_testN, clf.predict(X_testN))
+    
+    return scoreN, maeN
     

@@ -16,10 +16,8 @@
 </div>
 
 <div>
-	<a>El score obtenido es: {{score}}</a></br>
-	<a>El MAE obtenido es: {{mae}}</a></br>
-	{% for aux in prediccion %}
-    	<a>El resultado obtenido para el dia {{ forloop.counter }}: {{aux}}</a></br>
+	{% for item1, item2, item3 in myList %}
+    	<a>El resultado obtenido para el dia {{ forloop.counter }}: {{item3}} con score: {{item1}} y mae: {{item2}}</a></br>
     </tr>
 	{% endfor %}
 </div>

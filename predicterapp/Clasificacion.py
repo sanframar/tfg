@@ -34,7 +34,7 @@ def algoritmoClasificacion(nombreDatos, datosAdicionales, ventana, diasAPredecir
     y_test = modificarYParaClasificacion(y_test, float(epsilon))
     
     '''Declaramos nuestro algoritmo de regresion y lo entrenamos con el conjunto de entrenamiento'''
-    neigh = seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test)
+    neigh = seleccionarMejorAlgoritmoClasificacion(X_train, y_train, X_test, y_test)
     
     neigh.fit(X_train, y_train)
     
@@ -73,7 +73,7 @@ def modificarYParaClasificacion(datosArray, alfa):
             result.append(aumenDismOIgual(datosArray[index-1], value, alfa))
     return result
 
-def seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test):
+def seleccionarMejorAlgoritmoClasificacion(X_train, y_train, X_test, y_test):
     scores = {}
     '''Importacion de todos los algoritmos que vamos a implementar'''
     from sklearn.neighbors import KNeighborsClassifier
