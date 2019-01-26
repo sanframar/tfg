@@ -31,7 +31,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     from sklearn.kernel_ridge import KernelRidge
     #clf = KernelRidge(kernel="polynomial")
     from sklearn import linear_model
-    clf = linear_model.LinearRegression()
+    clf = seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test)
     
     clf.fit(X_train, y_train)
     
@@ -154,4 +154,46 @@ def matrizEntrenamientoTest(matrizCompleta, datosInfer, fechaInicioTrain, fechaF
     matrizTest = matrizCompleta[indiceTestFin:indiceTestInicio, :]
     
     return matrizTrain, matrizTest
+    
+def seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test):
+    scores = {}
+    '''Importacion de todos los algoritmos que vamos a implementar'''
+    from sklearn.kernel_ridge import KernelRidge
+    from sklearn import linear_model
+    from sklearn.linear_model import Ridge
+    from sklearn.tree import DecisionTreeRegressor
+    
+    '''Declaracion de los algoritmos y entrenamiento de los algortimos'''
+    '''Kernel Ridge'''
+    kernelRidge = KernelRidge(kernel="polynomial")
+    kernelRidge.fit(X_train, y_train)
+    scoreKernelRidge = kernelRidge.score(X_test, y_test)
+    scores[kernelRidge] = scoreKernelRidge
+    
+    '''Bayesian Ridge'''
+    bayesianRidge = linear_model.BayesianRidge()
+    bayesianRidge.fit(X_train, y_train)
+    scoreBayesianRidge = bayesianRidge.score(X_test, y_test)
+    scores[bayesianRidge] = scoreBayesianRidge
+    
+    '''Linear Regression'''
+    linearRegression = linear_model.LinearRegression()
+    linearRegression.fit(X_train, y_train)
+    scoreLinearRegression = linearRegression.score(X_test, y_test)
+    scores[linearRegression] = scoreLinearRegression
+    
+    '''Ridge Regression'''
+    ridge = Ridge(alpha=1.0)
+    ridge.fit(X_train, y_train)
+    scoreRidge = ridge.score(X_test, y_test)
+    scores[ridge] = scoreRidge
+    
+    '''Decission Tree Regression'''
+    decisionTreeRegressor = DecisionTreeRegressor(random_state=0)
+    decisionTreeRegressor.fit(X_train, y_train)
+    scoreDecisionTreeRegressor = decisionTreeRegressor.score(X_test, y_test)
+    scores[decisionTreeRegressor] = scoreDecisionTreeRegressor
+    
+    import operator
+    return max(scores.items(), key=operator.itemgetter(1))[0]
     

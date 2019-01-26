@@ -34,13 +34,9 @@ def algoritmoClasificacion(nombreDatos, datosAdicionales, ventana, diasAPredecir
     y_test = modificarYParaClasificacion(y_test, float(epsilon))
     
     '''Declaramos nuestro algoritmo de regresion y lo entrenamos con el conjunto de entrenamiento'''
-    from sklearn.neighbors import KNeighborsClassifier
-    #neigh = KNeighborsClassifier(n_neighbors=3)
+    neigh = seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test)
     
-    from sklearn.linear_model import LogisticRegression
-    neigh = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial')
-    
-    neigh.fit(X_train, y_train) 
+    neigh.fit(X_train, y_train)
     
     '''Comprobamos como es de bueno nuestro algoritmo'''
     score = neigh.score(X_test, y_test)
@@ -76,3 +72,46 @@ def modificarYParaClasificacion(datosArray, alfa):
         if(index>0):
             result.append(aumenDismOIgual(datosArray[index-1], value, alfa))
     return result
+
+def seleccionarMejorAlgoritmo(X_train, y_train, X_test, y_test):
+    scores = {}
+    '''Importacion de todos los algoritmos que vamos a implementar'''
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.naive_bayes import GaussianNB
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn.linear_model import SGDClassifier
+    from sklearn.linear_model import LogisticRegression
+    
+    '''Declaracion de los algoritmos y entrenamiento de los algortimos'''
+    '''K-Neighbors'''
+    neigh = KNeighborsClassifier(n_neighbors=3)
+    neigh.fit(X_train, y_train)
+    scoreNeigh = neigh.score(X_test, y_test)
+    scores[neigh] = scoreNeigh
+    
+    '''Gaussian Naive Baye'''
+    gaussianNaiveBaye = GaussianNB()
+    gaussianNaiveBaye.fit(X_train, y_train)
+    scoreGaussianNaiveBaye = gaussianNaiveBaye.score(X_test, y_test)
+    scores[gaussianNaiveBaye] = scoreGaussianNaiveBaye
+    
+    '''Decision Tree Classifier'''
+    decisionTree = DecisionTreeClassifier(random_state=0)
+    decisionTree.fit(X_train, y_train)
+    scoreDecisionTree = decisionTree.score(X_test, y_test)
+    scores[decisionTree] = scoreDecisionTree
+    
+    '''Stochastic Gradient Descent Classification'''
+    Sgcd = SGDClassifier(loss="hinge", penalty="l2", max_iter=5)
+    Sgcd.fit(X_train, y_train)
+    scoreSgcd = Sgcd.score(X_test, y_test)
+    scores[Sgcd] = scoreSgcd
+    
+    '''Logistic Regression'''
+    logisticRegression = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial')
+    logisticRegression.fit(X_train, y_train)
+    scoreLogisticRegression = logisticRegression.score(X_test, y_test)
+    scores[logisticRegression] = scoreLogisticRegression
+    
+    import operator
+    return max(scores.items(), key=operator.itemgetter(1))[0]
