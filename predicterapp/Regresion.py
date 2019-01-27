@@ -61,7 +61,7 @@ def regresionPolinomial(nombreDatos, datosAdicionales, ventana, diasAPredecir, f
     if int(diasAPredecir) >= 2:
         arrayBucle = (np.arange(int(diasAPredecir)-1))+1
         for aux in arrayBucle:
-            matrizTrainN, matrizTestN = creacionMatrizDePrediccionDeErroresFuturos(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana, aux)
+            matrizTrainN, matrizTestN = creacionMatrizDePrediccionDeErroresFuturosRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana, aux)
             scoreDiasPosteriores, maeDiasPosteriores = calcularScoreMaeDiasAnteriores(matrizTrainN, matrizTestN, clf)
             scoreArray.append(scoreDiasPosteriores)
             maeArray.append(maeDiasPosteriores)        
@@ -211,7 +211,7 @@ def seleccionarMejorAlgoritmoRegresion(X_train, y_train, X_test, y_test):
     import operator
     return max(scores.items(), key=operator.itemgetter(1))[0]
 
-def creacionMatrizDePrediccionDeErroresFuturos(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana, dia):
+def creacionMatrizDePrediccionDeErroresFuturosRegresion(datosArrayClass, datosInferClass, datosAdicionales, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, ventana, dia):
     
     '''Sumamos los dias a la ventana para no quedarnos sin matriz al reducirla'''
     ventana = int(ventana) + dia

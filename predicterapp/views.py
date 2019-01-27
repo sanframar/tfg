@@ -183,12 +183,12 @@ def resultadoClasificacion(form, selectMulti):
     score, prediccion = algoritmoClasificacion(select, selectMulti, ventana, diasAPredecir, fechaInicioTrain, fechaFinTrain, fechaInicioTest, fechaFinTest, epsilon)
     
     template = loader.get_template('predicterapp/resultadoClasificacion.html')
+    myList = zip(score, prediccion)
     context = {
         'ventana': ventana,
         'diasAPredecir': diasAPredecir,
         'select': select,
-        'score': score,
-        'prediccion': prediccion,
+        'myList': myList,
     }
     return HttpResponse(template.render(context))
 
