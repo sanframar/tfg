@@ -103,6 +103,25 @@ def formularioParaRegresion(request):
     if request.method == 'GET':
         # create a form instance and populate it with data from the request:
         form = FormularioRegresion(request.GET)
+        
+        #Validaciones de las fechas usadas en el formulario
+        if form.data['fechaIniTrain'] > form.data['fechaFinTrain']:
+            form.add_error('fechaIniTrain', 'La fecha de inicio debe ser menor a la fecha de fin')
+        if form.data['fechaIniTest'] > form.data['fechaFinTest']:
+            form.add_error('fechaIniTest', 'La fecha de inicio debe ser menor a la fecha de fin')
+        if  form.data['select'] in request.GET.getlist('selectMulti'):
+            form.add_error('selectMulti', 'No se puede volver a seleccionar el dato a predecir')
+        
+        #Solapamiento de fechas
+        if form.data['fechaIniTrain'] < form.data['fechaIniTest'] < form.data['fechaFinTrain'] or form.data['fechaIniTrain'] < form.data['fechaFinTest'] < form.data['fechaFinTrain']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+        elif form.data['fechaIniTest'] < form.data['fechaIniTrain'] < form.data['fechaFinTest'] or form.data['fechaIniTest'] < form.data['fechaFinTrain'] < form.data['fechaFinTest']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+        elif form.data['fechaIniTest'] < form.data['fechaIniTrain'] and form.data['fechaFinTest'] > form.data['fechaIniTran']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+        elif form.data['fechaIniTrain'] < form.data['fechaIniTest'] and form.data['fechaFinTrain'] > form.data['fechaIniTest']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+            
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -156,6 +175,24 @@ def formularioParaClasificacion(request):
     if request.method == 'GET':
         # create a form instance and populate it with data from the request:
         form = FormularioClasificacion(request.GET)
+        
+        #Validaciones de las fechas usadas en el formulario
+        if form.data['fechaIniTrain'] > form.data['fechaFinTrain']:
+            form.add_error('fechaIniTrain', 'La fecha de inicio debe ser menor a la fecha de fin')
+        if form.data['fechaIniTest'] > form.data['fechaFinTest']:
+            form.add_error('fechaIniTest', 'La fecha de inicio debe ser menor a la fecha de fin')
+        if  form.data['select'] in request.GET.getlist('selectMulti'):
+            form.add_error('selectMulti', 'No se puede volver a seleccionar el dato a predecir')
+            
+        #Solapamiento de fechas
+        if form.data['fechaIniTrain'] < form.data['fechaIniTest'] < form.data['fechaFinTrain'] or form.data['fechaIniTrain'] < form.data['fechaFinTest'] < form.data['fechaFinTrain']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+        elif form.data['fechaIniTest'] < form.data['fechaIniTrain'] < form.data['fechaFinTest'] or form.data['fechaIniTest'] < form.data['fechaFinTrain'] < form.data['fechaFinTest']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+        elif form.data['fechaIniTest'] < form.data['fechaIniTrain'] and form.data['fechaFinTest'] > form.data['fechaIniTran']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
+        elif form.data['fechaIniTrain'] < form.data['fechaIniTest'] and form.data['fechaFinTrain'] > form.data['fechaIniTest']:
+            form.add_error('fechaIniTrain', 'Las fechas de entrenamiento y pruebas no se pueden solapar')
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required

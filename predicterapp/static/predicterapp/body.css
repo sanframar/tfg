@@ -1,3 +1,9 @@
+/* ======= Errores ======= */
+.errorlist{
+	color: red;
+	font-weight: bold;
+}
+
 .contenedorArray{
 	width:40%;
 	float:left;
